@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BBATTLE | Online Auction House</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Inter:wght@300;400;600;800&display=swap');
+
+        :root {
+            --accent: #e11d48;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.5s, color 0.5s;
+            scroll-behavior: smooth;
+        }
+
+        .font-brand { font-family: 'Syncopate', sans-serif; }
+
+        /* The Hero Card Styling */
+        .gt-card {
+            background: white;
+            border-radius: 32px;
+            box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.15);
+            transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+            height: 550px;
+            width: 100%;
+            max-width: 1100px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dark-theme .gt-card {
+            background: #1e293b;
+            box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.6);
+        }
+
+        /* Item Hover Animation */
+        .bike-img {
+            transition: transform 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+            filter: drop-shadow(0 30px 40px rgba(0,0,0,0.25));
+            z-index: 20;
+        }
+
+        .bike-container:hover .bike-img {
+            transform: translateY(-80px) scale(1.05);
+        }
+
+        /* Information Overlay */
+        .info-overlay {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.5s ease;
+            background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0) 100%);
+            z-index: 30;
+        }
+
+        .bike-container:hover .info-overlay {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Glassmorphism elements */
+        .glass-btn {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .glass-btn:hover {
+            background: #e11d48;
+            border-color: #e11d48;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px -5px rgba(225, 29, 72, 0.4);
+        }
+
+        /* Scroll Reveal Animation */
+        .reveal {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s ease-out;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        .dark-theme ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #e11d48; border-radius: 10px; }
+
+        .parallax-bg {
+            background-attachment: fixed;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900">
+
+    <!-- Top Navigation Controls -->
+    <div class="fixed top-8 right-8 flex items-center gap-3 z-50">
+        <!-- Visit Now Button -->
+        <a href="#auctions" class="glass-btn px-6 py-3 rounded-2xl font-bold text-xs uppercase tracking-widest text-slate-600 dark:text-slate-300 flex items-center gap-2">
+            Enter Lobby
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+        </a>
+        
+        <!-- Theme Switcher -->
+        <button id="themeToggle" class="p-3 rounded-2xl glass-btn text-slate-600 dark:text-slate-300">
+            <svg id="themeIcon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M16.95 16.95l.707.707M7.05 7.05l.707.707M12 8a4 4 0 100 8 4 4 0 000-8z"></path>
+            </svg>
+        </button>
+    </div>
+
+    <!-- SECTION 1: INTRO PHASE -->
+    <section id="intro" class="min-h-screen flex items-center justify-center p-6 relative overflow-hidden">
+        <div class="absolute -top-24 -left-24 w-96 h-96 bg-rose-500/10 blur-3xl rounded-full"></div>
+        <div class="absolute bottom-0 -right-12 w-80 h-80 bg-blue-500/10 blur-3xl rounded-full"></div>
+
+        <div class="w-full max-w-6xl flex flex-col items-center gap-12 relative z-10 bike-container">
+            <div class="text-center">
+                <h1 class="text-6xl md:text-9xl font-brand font-bold leading-none tracking-tighter mb-4">
+                    <img src="C:\Users\CHAITANYA KUMAR\Downloads\prooooo\prooooo\img33.png" alt="Logo" class="w-20 h-20 mx-auto mb-6 object-contain">
+                    <span style="color: rgba(193, 199, 206, 0.94);">BBATTLE</span>
+                </h1>
+                <p class="text-slate-400 font-medium tracking-[0.3em] uppercase text-sm md:text-base">
+                    Online auction shopy • vintage collectibles • rare finds
+                </p>
+            </div>
+
+            <!-- The Interactive Stage -->
+            <div class="gt-card flex items-center justify-center">
+                <div class="absolute inset-0 flex items-center justify-center opacity-[0.03] select-none pointer-events-none">
+                    <span class="font-brand text-[10vw] font-bold">AUCTION</span>
+                </div>
+
+                <img src="C:\Users\CHAITANYA KUMAR\Downloads\Screenshot_14-3-2026_22514_.jpeg" 
+                     alt="Featured Item" class="bike-img w-[85%] md:w-[70%] rounded-xl">
+                
+                <div class="absolute inset-0 info-overlay flex flex-col justify-end p-12 text-white">
+                    <div class="max-w-2xl">
+                        <h2 class="text-4xl font-brand font-bold mb-3">BBATTLE</h2>
+                        <p id="dynamicDesc" class="text-lg opacity-80 leading-relaxed mb-6">
+                            Refers to the auction room filled with excitement as bidders fight for the same item. Every time one raises the price, the other quickly follows in a battle of will and rare finds.
+                        </p>
+                        <div class="flex gap-4">
+                            <a href="#auctions" class="bg-rose-600 px-8 py-3 rounded-full font-bold text-sm uppercase tracking-widest hover:bg-rose-700 transition-all">Bid Now</a>
+                            <button class="glass-btn px-8 py-3 rounded-full font-bold text-sm uppercase tracking-widest">Details</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex flex-wrap justify-center gap-4">
+                <button class="glass-btn px-6 py-3 rounded-2xl flex flex-col items-center min-w-[140px] group feature-trigger" data-title="LIVE BIDDING" data-desc="Real-time intense auction room mechanics with sub-second latency for the perfect strike.">
+                    <span class="text-[10px] font-bold text-slate-400 group-hover:text-white mb-1">INTENSITY</span>
+                    <span class="font-brand text-xs font-bold group-hover:text-white">BATTLE ROOM</span>
+                </button>
+                <button class="glass-btn px-6 py-3 rounded-2xl flex flex-col items-center min-w-[140px] group feature-trigger" data-title="AUTHENTICITY" data-desc="Every item is vetted by global experts to ensure 100% verified vintage quality.">
+                    <span class="text-[10px] font-bold text-slate-400 group-hover:text-white mb-1">TRUST</span>
+                    <span class="font-brand text-xs font-bold group-hover:text-white">VERIFIED</span>
+                </button>
+                <button class="glass-btn px-6 py-3 rounded-2xl flex flex-col items-center min-w-[140px] group feature-trigger" data-title="CURATED FINDS" data-desc="A rotating gallery of the world's most unique retro tech and luxury collectibles.">
+                    <span class="text-[10px] font-bold text-slate-400 group-hover:text-white mb-1">RARITY</span>
+                    <span class="font-brand text-xs font-bold group-hover:text-white">COLLECTIBLES</span>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 2: AUCTION DYNAMICS -->
+    <section id="auctions" class="py-32 px-6 bg-slate-900 text-white relative">
+        <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-20 items-center">
+            <div class="reveal">
+                <h2 class="text-5xl font-brand font-bold mb-8">VICTORY THROUGH <span class="text-rose-600">STRATEGY</span></h2>
+                <p class="text-slate-400 text-lg mb-12 leading-relaxed">
+                    BBATTLE is designed for the modern collector. Our bidding algorithms ensure fair play while maintaining the high-stakes pressure of a physical auction floor. Join thousands of collectors in the search for the extraordinary.
+                </p>
+                <div class="grid grid-cols-2 gap-8">
+                    <div>
+                        <span class="block text-4xl font-bold text-rose-600">12k+</span>
+                        <span class="text-sm uppercase tracking-widest text-slate-500">Active Bidders</span>
+                    </div>
+                    <div>
+                        <span class="block text-4xl font-bold text-rose-600">Rare</span>
+                        <span class="text-sm uppercase tracking-widest text-slate-500">Inventory</span>
+                    </div>
+                    <div>
+                        <span class="block text-4xl font-bold text-rose-600">Fast</span>
+                        <span class="text-sm uppercase tracking-widest text-slate-500">Settlements</span>
+                    </div>
+                    <div>
+                        <span class="block text-4xl font-bold text-rose-600">SECURE</span>
+                        <span class="text-sm uppercase tracking-widest text-slate-500">Escrow Tech</span>
+                    </div>
+                </div>
+            </div>
+            <div class="reveal relative" style="transition-delay: 0.2s">
+                <img src="C:\Users\CHAITANYA KUMAR\Downloads\prooooo\prooooo\mainlogo.jpg" alt="Auction House" class="rounded-3xl shadow-2xl">
+                <div class="absolute -bottom-6 -left-6 bg-rose-600 p-8 rounded-2xl font-brand font-bold">
+                  <a href="mainintroreload.html" class="text-white no-underline hover:underline">BID NOW</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 3: LEGACY PARALLAX -->
+    <section class="h-[60vh] parallax-bg relative flex items-center justify-center" style="background-image: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&q=80&w=1200');">
+        <div class="absolute inset-0 bg-black/60"></div>
+        <div class="relative z-10 text-center text-white px-6 reveal">
+            <h2 class="text-5xl md:text-7xl font-brand font-bold mb-4">COLLECTOR LEGACY</h2>
+            <p class="text-xl max-w-2xl mx-auto opacity-80 italic">"Items that define eras, curated for the bold."</p>
+        </div>
+    </section>
+
+    <!-- SECTION 4: CATEGORIES -->
+    <section id="variants" class="py-32 px-6">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-20 reveal">
+                <h2 class="text-5xl font-brand font-bold mb-4 uppercase">Hot Categories</h2>
+                <div class="w-24 h-1 bg-rose-600 mx-auto"></div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Category 1 -->
+                <div class="group reveal cursor-pointer">
+                    <div class="aspect-[4/5] bg-slate-200 rounded-3xl mb-6 overflow-hidden relative">
+                        <img src="C:\Users\CHAITANYA KUMAR\Downloads\prooooo\prooooo\cars2.jpeg?auto=format&fit=crop&q=80&w=600" alt="Vintage Tech" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                    </div>
+                    <h3 class="text-2xl font-brand font-bold mb-2">VINTAGE TECH</h3>
+                    <p class="text-slate-500 text-sm uppercase tracking-widest">Retro Computers & Gear</p>
+                </div>
+                <!-- Category 2 -->
+                <div class="group reveal cursor-pointer" style="transition-delay: 0.1s">
+                    <div class="aspect-[4/5] bg-slate-200 rounded-3xl mb-6 overflow-hidden relative">
+                        <img src="C:\Users\CHAITANYA KUMAR\Downloads\prooooo\prooooo\artmain.webp?auto=format&fit=crop&q=80&w=600" alt="Rare Art" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                    </div>
+                    <h3 class="text-2xl font-brand font-bold mb-2">RARE ART</h3>
+                    <p class="text-slate-500 text-sm uppercase tracking-widest">Underground & Classic</p>
+                </div>
+                <!-- Category 3 -->
+                <div class="group reveal cursor-pointer" style="transition-delay: 0.2s">
+                    <div class="aspect-[4/5] bg-slate-200 rounded-3xl mb-6 overflow-hidden relative">
+                        <img src="https://images.unsplash.com/photo-1605810230434-7631ac76ec81?auto=format&fit=crop&q=80&w=600" alt="Collectibles" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                    </div>
+                    <h3 class="text-2xl font-brand font-bold mb-2">TIMELESS LUXURY</h3>
+                    <p class="text-slate-500 text-sm uppercase tracking-widest">Watches & Rare Goods</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-slate-950 text-slate-500 py-20 px-6 border-t border-slate-900">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-12">
+            <div>
+                <h4 class="font-brand font-bold text-white text-2xl mb-4">BBATTLE</h4>
+                <p class="text-sm max-w-xs">Connecting the world's most passionate collectors through intense bidding wars.</p>
+            </div>
+            <div class="flex gap-12">
+                <div>
+                    <h5 class="text-white font-bold text-xs uppercase tracking-widest mb-4">Platform</h5>
+                    <ul class="text-xs space-y-2">
+                        <li><a href="#" class="hover:text-rose-600 transition-colors">Seller Portal</a></li>
+                        <li><a href="#" class="hover:text-rose-600 transition-colors">Escrow Policy</a></li>
+                        <li><a href="#" class="hover:text-rose-600 transition-colors">Fees</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h5 class="text-white font-bold text-xs uppercase tracking-widest mb-4">Connect</h5>
+                    <ul class="text-xs space-y-2">
+                        <li><a href="#" class="hover:text-rose-600 transition-colors">Discord</a></li>
+                        <li><a href="#" class="hover:text-rose-600 transition-colors">Twitter</a></li>
+                        <li><a href="#" class="hover:text-rose-600 transition-colors">Newsletter</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="text-center mt-20 text-[10px] uppercase tracking-widest opacity-50">
+            © 2026 BBATTLE AUCTION HOUSE • ALL RIGHTS RESERVED
+        </div>
+    </footer>
+
+    <script>
+        // Theme Toggle Logic
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+        
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark');
+            document.body.classList.toggle('dark-theme');
+            const isDark = document.body.classList.contains('dark');
+            
+            if(isDark) {
+                document.body.classList.remove('bg-slate-50', 'text-slate-900');
+                document.body.classList.add('bg-slate-950', 'text-slate-100');
+                themeIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>';
+            } else {
+                document.body.classList.remove('bg-slate-950', 'text-slate-100');
+                document.body.classList.add('bg-slate-50', 'text-slate-900');
+                themeIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M16.95 16.95l.707.707M7.05 7.05l.707.707M12 8a4 4 0 100 8 4 4 0 000-8z"></path>';
+            }
+        });
+
+        // Feature Trigger Logic for the Intro Stage
+        const overlayTitle = document.querySelector('.info-overlay h2');
+        const overlayDesc = document.getElementById('dynamicDesc');
+
+        document.querySelectorAll('.feature-trigger').forEach(trigger => {
+            trigger.addEventListener('mouseenter', () => {
+                overlayTitle.innerText = trigger.getAttribute('data-title');
+                overlayDesc.innerText = trigger.getAttribute('data-desc');
+            });
+        });
+
+        // Scroll Reveal Intersection Observer
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+    </script>
+</body>
+</html>
